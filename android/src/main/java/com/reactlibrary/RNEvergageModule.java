@@ -4,6 +4,7 @@ package com.reactlibrary;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.evergage.android.Context;
 import com.evergage.android.Evergage;
 import com.evergage.android.Screen;
 import com.evergage.android.promote.Item;
@@ -29,14 +30,14 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
      * This method (and getScreenForActivity) must be called from main thread
      * Use UiThreadUtil.runOnUiThread for this to avoid calling runnable from dead thread.
      */
-    private Screen getScreen() {
+    private Context getScreen() {
         Screen screen = Evergage.getInstance().getScreenForActivity(this.getCurrentActivity());
 
         if (null != screen) {
             return screen;
         } else {
-            android.util.Log.w(TAG, "Evergage screen is empty - is Evergage initialized?");
-            return null;
+            android.util.Log.w(TAG, "Evergage screen is empty, is Evergage initialized? Returning global context.");
+            return Evergage.getInstance().getGlobalContext();
         }
     }
 
@@ -55,7 +56,7 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Screen screen = getScreen();
+                Context screen = getScreen();
                 if (null != screen) {
                     screen.trackAction(action);
                 }
@@ -68,7 +69,7 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Screen screen = getScreen();
+                Context screen = getScreen();
                 if (null != screen) {
                     Product item = new Product(itemProperty.getString("id"));
                     item.alternateId = itemProperty.getString("alternateId");
