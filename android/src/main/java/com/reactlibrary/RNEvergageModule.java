@@ -64,28 +64,6 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
         });
     }
 
-    @ReactMethod
-    public void trackItem(final ReadableMap itemProperty) {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Context screen = getScreen();
-                if (null != screen) {
-                    Product item = new Product(itemProperty.getString("id"));
-                    item.alternateId = itemProperty.getString("alternateId");
-                    item.description = itemProperty.getString("description");
-                    item.currency = itemProperty.getString("currency");
-                    item.inventoryCount = itemProperty.getInt("inventoryCount");
-                    item.listPrice = itemProperty.getDouble("listPrice");
-                    item.price = itemProperty.getDouble("price");
-                    item.priceDescription = itemProperty.getString("priceDescription");
-
-                    screen.viewItem(item);
-                }
-            }
-        });
-    }
-
     @Override
     public String getName() {
         return "RNEvergage";

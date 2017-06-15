@@ -25,11 +25,5 @@ RCT_EXPORT_METHOD(trackAction:(NSString *)action) {
     [evergage trackAction:action];
 }
 
-RCT_EXPORT_METHOD(trackItem:(NSDictionary *)item) {
-    EVGContext *evergage = [[Evergage sharedInstance] globalContext];
-    EVGProduct *product = [EVGProduct productFromJSONDictionary:item];
-    [evergage viewItem:product];
-}
-
 @end
   

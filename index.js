@@ -28,22 +28,6 @@ const ReactNativeEvergage = {
 	sendEvent: function sendEvent(event) {
 		RNEvergage.trackAction(event);
 	},
-    /**
-     * Track item given an item object
-     * @param {{
-     *     id: string,
-     *     alternateId: string,
-     *     description: string,
-     *     currency: string,
-     *     inventoryCount: int,
-     *     listPrice: float,
-     *     price: float,
-     *     priceDescription: string
-     * }} item
-     */
-	trackItem: function trackItem(item) {
-		RNEvergage.trackItem(item);
-	}
 };
 
 export default ReactNativeEvergage;
