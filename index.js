@@ -4,6 +4,14 @@ const { RNEvergage } = NativeModules;
 
 const ReactNativeEvergage = {
     /**
+	 * Start Evergage with given account and dataset
+     * @param {string} account
+     * @param {string} dataset
+     */
+	start: function start(account, dataset) {
+		RNEvergage.start(account, dataset);
+	},
+    /**
      * Set User Id
      * User id is converted to string to avoid iOS native bridging error
      * @param {string} userId

@@ -1,19 +1,12 @@
 
 package com.reactlibrary;
 
-import android.os.Handler;
-import android.os.Looper;
-
 import com.evergage.android.Context;
 import com.evergage.android.Evergage;
 import com.evergage.android.Screen;
-import com.evergage.android.promote.Item;
-import com.evergage.android.promote.Product;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.Callback;
-import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.UiThreadUtil;
 
 public class RNEvergageModule extends ReactContextBaseJavaModule {
@@ -39,6 +32,13 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
             android.util.Log.w(TAG, "Evergage screen is empty, is Evergage initialized? Returning global context.");
             return Evergage.getInstance().getGlobalContext();
         }
+    }
+
+    @ReactMethod
+    public void start(String account, String dataset) {
+        Evergage evergage = Evergage.getInstance();
+        evergage.reset(); //.reset() needs to be called to override subsequent config for .start()
+        evergage.start(account, dataset);
     }
 
     @ReactMethod
