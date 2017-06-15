@@ -17,6 +17,7 @@ RCT_EXPORT_METHOD(setUserId:(NSString *)userId) {
 
 RCT_EXPORT_METHOD(start:(NSString *)account withDataset:(NSString *)dataset) {
     Evergage *evergage = [Evergage sharedInstance];
+    [evergage reset];
     [evergage startWithEvergageAccountKey:account dataset:dataset];
 }
 
