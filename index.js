@@ -36,6 +36,22 @@ const ReactNativeEvergage = {
 	sendEvent: function sendEvent(event) {
 		RNEvergage.trackAction(event);
 	},
+    /**
+	 * Set Evergage Campaign Handler for given target name,
+	 * if a campaign handler is called, the callback function would be invoked
+     * @param {string} target - target name
+     * @param {campaignCallback} callback - callback function to be invoked
+     */
+    setCampaignHandler: (target, callback) => {
+        RNEvergage.setCampaignHandler(target, callback);
+    },
+    /**
+     * JSDoc definition for campaignCallback.
+     * @callback campaignCallback
+     * @param {string} campaignName - name of the campaign
+     * @param {Object.<string, string>} jsonData - JSON data with string-string key value pair
+     */
 };
 
 export default ReactNativeEvergage;
+
