@@ -8,6 +8,11 @@
 {
     return dispatch_get_main_queue();
 }
+
+- (EVGContext *)getScreen {
+    return [[Evergage sharedInstance] globalContext];
+}
+
 RCT_EXPORT_MODULE()
 
 RCT_EXPORT_METHOD(setUserId:(NSString *)userId) {
@@ -18,6 +23,10 @@ RCT_EXPORT_METHOD(setUserId:(NSString *)userId) {
 RCT_EXPORT_METHOD(start:(NSString *)account withDataset:(NSString *)dataset) {
     Evergage *evergage = [Evergage sharedInstance];
     [evergage reset];
+#ifdef DEBUG
+    evergage.logLevel = EVGLogLevelAll;
+    [evergage allowDesignConnections];
+#endif
     [evergage startWithEvergageAccountKey:account dataset:dataset];
 }
 
@@ -27,9 +36,29 @@ RCT_EXPORT_METHOD(setUserAttribute:(NSString *)name withValue:(NSString *)value)
 }
 
 RCT_EXPORT_METHOD(trackAction:(NSString *)action) {
-    EVGContext *evergage = [[Evergage sharedInstance] globalContext];
-    [evergage trackAction:action];
+    EVGContext *screen = [self getScreen];
+    [screen trackAction:action];
+}
+
+RCT_EXPORT_METHOD(setCampaignHandler:(NSString *)target withCallback:(RCTResponseSenderBlock)callback) {
+    EVGContext *screen = [self getScreen];
+    
+    EVGCampaignHandler handler = ^(EVGCampaign * __nonnull campaign) {
+        callback(@[campaign.campaignName, campaign.data]);
+    };
+    
+    [screen setCampaignHandler:handler forTarget:target];
 }
 
 @end
-  
+
+
+
+
+
+
+
+
+
+
+
