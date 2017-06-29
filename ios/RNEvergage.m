@@ -24,7 +24,7 @@ RCT_EXPORT_METHOD(start:(NSString *)account withDataset:(NSString *)dataset) {
     Evergage *evergage = [Evergage sharedInstance];
     [evergage reset];
 #ifdef DEBUG
-    evergage.logLevel = EVGLogLevelAll;
+    evergage.logLevel = EVGLogLevelWarn;
     [evergage allowDesignConnections];
 #endif
     [evergage startWithEvergageAccountKey:account dataset:dataset];
