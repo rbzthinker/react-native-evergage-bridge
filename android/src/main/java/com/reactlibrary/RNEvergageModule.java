@@ -82,7 +82,26 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setCampaignHandler(final String target, final Callback callback) {
+    public void viewProduct(final ReadableMap productMap) {
+        UiThreadUtil.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Context screen = getScreen();
+                if (null != screen) {
+                    Product product = new Product(productMap.getString("id"));
+                    product.price = productMap.getDouble("price");
+                    product.listPrice = productMap.getDouble("retailPrice");
+                    product.inventoryCount = productMap.getInt("stock");
+                    product.alternateId = productMap.getString("sku");
+
+                    screen.viewItem(product);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setCampaignHandler(final String target) {
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
