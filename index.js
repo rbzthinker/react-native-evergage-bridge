@@ -50,15 +50,14 @@ const ReactNativeEvergage = {
      * @param {campaignCallback} callback - callback function to be invoked
      */
     setCampaignHandler: (target, callback) => {
-        RNEvergage.setCampaignHandler(target, callback);
+        NativeAppEventEmitter.addListener(`EvergageCampaignHandler-${target}`, callback);
+        RNEvergage.setCampaignHandler(target);
     },
     /**
      * JSDoc definition for campaignCallback.
      * @callback campaignCallback
-     * @param {string} campaignName - name of the campaign
-     * @param {Object.<string, string>} jsonData - JSON data with string-string key value pair
+     * @param {Object.<string, string>} JSON data with string-string key value pair
      */
 };
 
 export default ReactNativeEvergage;
-

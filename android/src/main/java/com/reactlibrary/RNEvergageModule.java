@@ -7,13 +7,17 @@ import com.evergage.android.Campaign;
 import com.evergage.android.CampaignHandler;
 import com.evergage.android.Context;
 import com.evergage.android.Evergage;
+import com.evergage.android.LogLevel;
+import com.evergage.android.promote.Product;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.RCTNativeAppEventEmitter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,6 +28,7 @@ import java.util.Map;
 
 public class RNEvergageModule extends ReactContextBaseJavaModule {
     private static final String TAG = "RNEvergageModule";
+    private static final String EVERGAGE_CAMPAIGN_EVENT_SUFFIX = "EvergageCampaignHandler-"; //If you change this, remember to also change it in index.js
 
     /**
      * Map with campaign target name as key and campaign handler as value
@@ -52,7 +57,7 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 Evergage evergage = Evergage.getInstance();
-                evergage.reset(); //.reset() needs to be called to override subsequent config for .start()
+//                evergage.reset(); //.reset() needs to be called to override subsequent config for .start()
                 evergage.start(account, dataset);
             }
         });
@@ -132,7 +137,9 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
                         }
 
                         //Call JS Callback on frontend with campaign name and JSON data
-                        callback.invoke(campaignName, map);
+                        //React-native's Callback object can only be invoked ONCE, so we use RCTNativeAppEventEmitter instead
+                        RCTNativeAppEventEmitter eventEmitter = getReactApplicationContext().getJSModule(RCTNativeAppEventEmitter.class);
+                        eventEmitter.emit(EVERGAGE_CAMPAIGN_EVENT_SUFFIX + target, map);
                     }
                 };
                 campaignHandlers.put(target, handler);
