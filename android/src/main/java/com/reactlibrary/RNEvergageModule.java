@@ -7,10 +7,7 @@ import com.evergage.android.Campaign;
 import com.evergage.android.CampaignHandler;
 import com.evergage.android.Context;
 import com.evergage.android.Evergage;
-import com.evergage.android.LogLevel;
 import com.evergage.android.promote.Product;
-import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -23,7 +20,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class RNEvergageModule extends ReactContextBaseJavaModule {
@@ -93,11 +89,16 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
             public void run() {
                 Context screen = getScreen();
                 if (null != screen) {
-                    Product product = new Product(productMap.getString("id"));
+                    Product product = new Product(productMap.getString("id")); //required
                     product.price = productMap.getDouble("price");
                     product.listPrice = productMap.getDouble("retailPrice");
                     product.inventoryCount = productMap.getInt("stock");
                     product.alternateId = productMap.getString("sku");
+
+                    //The following are required fields for campaign data to train correctly
+                    product.imageUrl = productMap.getString("imageUrl");
+                    product.url = productMap.getString("url");
+                    product.name = productMap.getString("name");
 
                     screen.viewItem(product);
                 }
@@ -121,25 +122,16 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
                            <String, String>)
                          */
                         JSONObject data = campaign.getData();
-                        String campaignName = campaign.getCampaignName();
+                        try {
+                            WritableMap map = JsonConvert.jsonToReact(data);
 
-                        //Create JSON object to return to frontend
-                        Iterator<String> keys = data.keys();
-                        WritableMap map = Arguments.createMap();
-                        while (keys.hasNext()) {
-                            String key = keys.next();
-                            try {
-                                Object value = data.get(key);
-                                map.putString(key, String.valueOf(value));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                            //Call JS Callback on frontend with campaign name and JSON data
+                            //React-native's Callback object can only be invoked ONCE, so we use RCTNativeAppEventEmitter instead
+                            RCTNativeAppEventEmitter eventEmitter = getReactApplicationContext().getJSModule(RCTNativeAppEventEmitter.class);
+                            eventEmitter.emit(EVERGAGE_CAMPAIGN_EVENT_SUFFIX + target, map);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-
-                        //Call JS Callback on frontend with campaign name and JSON data
-                        //React-native's Callback object can only be invoked ONCE, so we use RCTNativeAppEventEmitter instead
-                        RCTNativeAppEventEmitter eventEmitter = getReactApplicationContext().getJSModule(RCTNativeAppEventEmitter.class);
-                        eventEmitter.emit(EVERGAGE_CAMPAIGN_EVENT_SUFFIX + target, map);
                     }
                 };
                 campaignHandlers.put(target, handler);
