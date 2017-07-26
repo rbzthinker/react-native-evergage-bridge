@@ -1,8 +1,9 @@
-
 #import "RNEvergage.h"
 #import <Evergage/Evergage.h>
 
-@implementation RNEvergage
+@implementation RNEvergage {
+    NSMutableArray *events;
+}
 
 - (dispatch_queue_t)methodQueue
 {
@@ -22,7 +23,6 @@ RCT_EXPORT_METHOD(setUserId:(NSString *)userId) {
 
 RCT_EXPORT_METHOD(start:(NSString *)account withDataset:(NSString *)dataset) {
     Evergage *evergage = [Evergage sharedInstance];
-    [evergage reset];
 #ifdef DEBUG
     evergage.logLevel = EVGLogLevelWarn;
     [evergage allowDesignConnections];
@@ -40,11 +40,34 @@ RCT_EXPORT_METHOD(trackAction:(NSString *)action) {
     [screen trackAction:action];
 }
 
-RCT_EXPORT_METHOD(setCampaignHandler:(NSString *)target withCallback:(RCTResponseSenderBlock)callback) {
+RCT_EXPORT_METHOD(viewProduct:(NSDictionary *)productMap) {
     EVGContext *screen = [self getScreen];
+    EVGProduct *product = [EVGProduct productWithId:productMap[@"id"]
+                                               name:productMap[@"name"]
+                                              price:productMap[@"price"]
+                                                url:productMap[@"url"]
+                                           imageUrl:productMap[@"imageUrl"]
+                                     evgDescription:@""
+                           ];
+    [screen viewItem:product];
+}
+
+- (NSString *)getEventNameForTarget:(NSString *)target {
+    return [NSString stringWithFormat:@"EvergageCampaignHandler-%@", target];
+}
+
+- (NSArray<NSString *> *)supportedEvents {
+    return events;
+}
+
+RCT_EXPORT_METHOD(setCampaignHandler:(NSString *)target) {
+    EVGContext *screen = [self getScreen];
+    NSString *eventName = [self getEventNameForTarget:target];
+    [events addObject:eventName];
     
     EVGCampaignHandler handler = ^(EVGCampaign * __nonnull campaign) {
-        callback(@[campaign.campaignName, campaign.data]);
+        NSString *eventName = [self getEventNameForTarget:target];
+        [self sendEventWithName:eventName body:campaign.data];
     };
     
     [screen setCampaignHandler:handler forTarget:target];
