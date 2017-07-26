@@ -1,9 +1,7 @@
 #import "RNEvergage.h"
 #import <Evergage/Evergage.h>
 
-@implementation RNEvergage {
-    NSMutableArray *events;
-}
+@implementation RNEvergage
 
 - (dispatch_queue_t)methodQueue
 {
@@ -53,22 +51,21 @@ RCT_EXPORT_METHOD(viewProduct:(NSDictionary *)productMap) {
     [screen viewItem:product];
 }
 
-- (NSString *)getEventNameForTarget:(NSString *)target {
-    return [NSString stringWithFormat:@"EvergageCampaignHandler-%@", target];
+- (NSString *)getEventName {
+    return @"EvergageCampaignHandler";
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-    return events;
+    return @[[self getEventName]];
 }
 
 RCT_EXPORT_METHOD(setCampaignHandler:(NSString *)target) {
     EVGContext *screen = [self getScreen];
-    NSString *eventName = [self getEventNameForTarget:target];
-    [events addObject:eventName];
     
     EVGCampaignHandler handler = ^(EVGCampaign * __nonnull campaign) {
-        NSString *eventName = [self getEventNameForTarget:target];
-        [self sendEventWithName:eventName body:campaign.data];
+        [self sendEventWithName:[self getEventName]
+                           body:@{@"target":target,
+                                  @"data": campaign.data}];
     };
     
     [screen setCampaignHandler:handler forTarget:target];

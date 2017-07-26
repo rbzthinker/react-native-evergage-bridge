@@ -1,6 +1,8 @@
-import { NativeModules, NativeAppEventEmitter } from 'react-native';
+import { NativeModules, NativeEventEmitter } from 'react-native';
 
 const { RNEvergage } = NativeModules;
+
+let campaignHandlers = {}
 
 const ReactNativeEvergage = {
     /**
@@ -50,7 +52,10 @@ const ReactNativeEvergage = {
      * @param {campaignCallback} callback - callback function to be invoked
      */
     setCampaignHandler: (target, callback) => {
-        NativeAppEventEmitter.addListener(`EvergageCampaignHandler-${target}`, callback);
+        campaignHandlers[target] = callback;
+        new NativeEventEmitter(RNEvergage).addListener('EvergageCampaignHandler', ({target, data}) => {
+            campaignHandlers[target](data);
+        });
         RNEvergage.setCampaignHandler(target);
     },
     /**
