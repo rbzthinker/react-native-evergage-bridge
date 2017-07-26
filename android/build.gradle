@@ -35,6 +35,6 @@ android {
 
 dependencies {
     compile 'com.facebook.react:react-native:+'
-    compile('com.evergage.android:evergage-android-sdk:1.2.2@aar') { transitive = true }
+    compile('com.evergage.android:evergage-android-sdk:1.2.3@aar') { transitive = true }
 }
   

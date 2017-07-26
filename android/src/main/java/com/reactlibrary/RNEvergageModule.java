@@ -53,7 +53,7 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 Evergage evergage = Evergage.getInstance();
-//                evergage.reset(); //.reset() needs to be called to override subsequent config for .start()
+                evergage.reset(); //.reset() needs to be called to override subsequent config for .start()
                 evergage.start(account, dataset);
             }
         });
