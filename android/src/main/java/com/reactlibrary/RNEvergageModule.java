@@ -8,6 +8,7 @@ import com.evergage.android.CampaignHandler;
 import com.evergage.android.Context;
 import com.evergage.android.Evergage;
 import com.evergage.android.promote.Product;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -24,7 +25,7 @@ import java.util.Map;
 
 public class RNEvergageModule extends ReactContextBaseJavaModule {
     private static final String TAG = "RNEvergageModule";
-    private static final String EVERGAGE_CAMPAIGN_EVENT_SUFFIX = "EvergageCampaignHandler-"; //If you change this, remember to also change it in index.js
+    private static final String EVERGAGE_CAMPAIGN_EVENT = "EvergageCampaignHandler"; //If you change this, remember to also change it in index.js
 
     /**
      * Map with campaign target name as key and campaign handler as value
@@ -123,12 +124,14 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
                          */
                         JSONObject data = campaign.getData();
                         try {
-                            WritableMap map = JsonConvert.jsonToReact(data);
+                            WritableMap map = Arguments.createMap();
+                            map.putString("target", target);
+                            map.putMap("data", JsonConvert.jsonToReact(data));
 
                             //Call JS Callback on frontend with campaign name and JSON data
                             //React-native's Callback object can only be invoked ONCE, so we use RCTNativeAppEventEmitter instead
                             RCTNativeAppEventEmitter eventEmitter = getReactApplicationContext().getJSModule(RCTNativeAppEventEmitter.class);
-                            eventEmitter.emit(EVERGAGE_CAMPAIGN_EVENT_SUFFIX + target, map);
+                            eventEmitter.emit(EVERGAGE_CAMPAIGN_EVENT, map);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
