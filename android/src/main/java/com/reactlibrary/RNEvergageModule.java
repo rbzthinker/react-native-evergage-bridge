@@ -91,15 +91,15 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
                 Context screen = getScreen();
                 if (null != screen) {
                     Product product = new Product(productMap.getString("id")); //required
-                    product.price = productMap.getDouble("price");
-                    product.listPrice = productMap.getDouble("retailPrice");
-                    product.inventoryCount = productMap.getInt("stock");
-                    product.alternateId = productMap.getString("sku");
+                    product.price = canGetValueForKey(productMap, "price") ? productMap.getDouble("price") : null;
+                    product.listPrice = canGetValueForKey(productMap, "retailPrice") ? productMap.getDouble("retailPrice") : null;
+                    product.inventoryCount = canGetValueForKey(productMap, "stock") ? productMap.getInt("stock") : null;
+                    product.alternateId = canGetValueForKey(productMap, "sku") ? productMap.getString("sku") : null;
 
                     //The following are required fields for campaign data to train correctly
-                    product.imageUrl = productMap.getString("imageUrl");
-                    product.url = productMap.getString("url");
-                    product.name = productMap.getString("name");
+                    product.imageUrl = canGetValueForKey(productMap, "imageUrl") ? productMap.getString("imageUrl") : null;
+                    product.url = canGetValueForKey(productMap, "url") ? productMap.getString("url") : null;
+                    product.name = canGetValueForKey(productMap, "name") ? productMap.getString("name") : null;
 
                     screen.viewItem(product);
                 }
@@ -147,5 +147,16 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
     @Override
     public String getName() {
         return "RNEvergage";
+    }
+
+    /**
+     * Check if given React-native ReadableMap has a given key and the value is not equal to null
+     * (in which will throw RuntimeException)
+     * @param map React-Native ReadableMap
+     * @param key The key to be checked for
+     * @return true if the map has a given key and the value is not null
+     */
+    private boolean canGetValueForKey(ReadableMap map, String key) {
+        return map.hasKey(key) && !map.isNull(key);
     }
 }
