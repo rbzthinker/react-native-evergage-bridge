@@ -107,8 +107,8 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
                     //tags
                     List<Tag> tags = new ArrayList<>();
                     //check for brand name key value
-                    if(canGetValueForKey(productMap, "brandName")){
-                        Tag tagProductBrand = new Tag(productMap.getString("brand_name"), Tag.Type.Brand);
+                    if(canGetValueForKey(productMap, "brand")){
+                        Tag tagProductBrand = new Tag(productMap.getString("brand"), Tag.Type.Brand);
                         tags.add(tagProductBrand);
                     }
                     if(tags.size()>0)
