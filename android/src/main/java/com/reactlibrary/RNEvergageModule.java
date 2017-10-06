@@ -8,6 +8,7 @@ import com.evergage.android.CampaignHandler;
 import com.evergage.android.Context;
 import com.evergage.android.Evergage;
 import com.evergage.android.promote.Product;
+import com.evergage.android.promote.Tag;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -20,7 +21,9 @@ import com.facebook.react.modules.core.RCTNativeAppEventEmitter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RNEvergageModule extends ReactContextBaseJavaModule {
@@ -100,6 +103,16 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
                     product.imageUrl = canGetValueForKey(productMap, "imageUrl") ? productMap.getString("imageUrl") : null;
                     product.url = canGetValueForKey(productMap, "url") ? productMap.getString("url") : null;
                     product.name = canGetValueForKey(productMap, "name") ? productMap.getString("name") : null;
+
+                    //tags
+                    List<Tag> tags = new ArrayList<>();
+                    //check for brand name key value
+                    if(canGetValueForKey(productMap, "brandName")){
+                        Tag tagProductBrand = new Tag(productMap.getString("brand_name"), Tag.Type.Brand);
+                        tags.add(tagProductBrand);
+                    }
+                    if(tags.size()>0)
+                        product.tags = tags;
 
                     screen.viewItem(product);
                 }
