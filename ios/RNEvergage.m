@@ -50,9 +50,10 @@ RCT_EXPORT_METHOD(viewProduct:(NSDictionary *)productMap) {
                            ];
     EVGTag *tagProductBrand = [EVGTag tagWithId:productMap[@"brand"] type:EVGTagTypeBrand];
     EVGTag *tagProductGender = [EVGTag tagWithId:productMap[@"gender"] type:EVGTagTypeGender];
-    EVGCategory *productCategory = [EVGCategory categoryWithId:[NSString stringWithFormat:@"%@|%@", productMap[@"category"], productMap[@"subcategory"]]]
+    EVGTag *tagProductClass = [EVGTag tagWithId:productMap[@"classification"] type:EVGTagTypeItemClass];
+    EVGCategory *productCategory = [EVGCategory categoryWithId:[NSString stringWithFormat:@"%@|%@", productMap[@"category"], productMap[@"subcategory"]]];
     
-    NSArray *tags = [NSArray arrayWithObjects:tagProductBrand, tagProductGender, nil];
+    NSArray *tags = [NSArray arrayWithObjects:tagProductBrand, tagProductGender, tagProductClass, nil];
     NSArray *categories = [NSArray arrayWithObject:productCategory];
     
     [product setTags:tags];
