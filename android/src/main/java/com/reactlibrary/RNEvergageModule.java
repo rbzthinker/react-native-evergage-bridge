@@ -7,6 +7,7 @@ import com.evergage.android.Campaign;
 import com.evergage.android.CampaignHandler;
 import com.evergage.android.Context;
 import com.evergage.android.Evergage;
+import com.evergage.android.promote.Category;
 import com.evergage.android.promote.Product;
 import com.evergage.android.promote.Tag;
 import com.facebook.react.bridge.Arguments;
@@ -22,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,8 +113,32 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
                         Tag tagProductBrand = new Tag(productMap.getString("brand"), Tag.Type.Brand);
                         tags.add(tagProductBrand);
                     }
+                    if(canGetValueForKey(productMap, "gender")){
+                        Tag tagProductGender = new Tag(productMap.getString("gender"), Tag.Type.Gender);
+                        tags.add(tagProductGender);
+                    }
+                    if(canGetValueForKey(productMap, "classification")){
+                        Tag tagProductClass = new Tag(productMap.getString("classification"), Tag.Type.ItemClass);
+                        tags.add(tagProductClass);
+                    }
+
+                    //Categories
+                    List<Category> categories = new ArrayList<>();
+
+                    if(canGetValueForKey(productMap, "category")){
+                        String strProductCategory = productMap.getString("category");
+                        String strProductSubCategory = productMap.getString("subcategory");
+                        if(strProductSubCategory.length()>0){
+                            strProductCategory = strProductCategory + "|" + strProductSubCategory;
+                        }
+                        Category productCategory = new Category(strProductCategory);
+                        categories.add(productCategory);
+                    }
+
                     if(tags.size()>0)
                         product.tags = tags;
+                    if(categories.size()>0)
+                        product.categories = categories;
 
                     screen.viewItem(product);
                 }
