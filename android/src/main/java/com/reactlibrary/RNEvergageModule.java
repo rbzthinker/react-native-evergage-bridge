@@ -2,6 +2,7 @@
 package com.reactlibrary;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.evergage.android.Campaign;
 import com.evergage.android.CampaignHandler;
@@ -40,6 +41,8 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
 
+    private Map<String, Campaign> campaignData = new HashMap<>();
+
     public RNEvergageModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
@@ -73,6 +76,45 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setUserAttribute(String name, String value) {
         Evergage.getInstance().setUserAttribute(name, value);
+    }
+
+    @ReactMethod
+    public void trackDismissal(final String target) {
+        UiThreadUtil.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Context screen = getScreen();
+                if (null != screen) {
+                    screen.trackDismissal(campaignData.get(target));
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void trackClickThrough(final String target) {
+        UiThreadUtil.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Context screen = getScreen();
+                if (null != screen) {
+                    screen.trackClickthrough(campaignData.get(target));
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void trackImpression(final String target) {
+        UiThreadUtil.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Context screen = getScreen();
+                if (null != screen) {
+                    screen.trackImpression(campaignData.get(target));
+                }
+            }
+        });
     }
 
     @ReactMethod
@@ -161,6 +203,7 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
                           (although the key-value pair returned from evergage is always with type
                            <String, String>)
                          */
+                        campaignData.put(target, campaign);
                         JSONObject data = campaign.getData();
                         try {
                             WritableMap map = Arguments.createMap();
@@ -177,7 +220,6 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
                     }
                 };
                 campaignHandlers.put(target, handler);
-
                 screen.setCampaignHandler(handler, target);
             }
         });
