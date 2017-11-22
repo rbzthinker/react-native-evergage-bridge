@@ -63,6 +63,18 @@ const ReactNativeEvergage = {
      * @callback campaignCallback
      * @param {Object.<string, string>} JSON data with string-string key value pair
      */
+
+    trackClickThrough: function trackClickThrough(target) {
+        RNEvergage.trackClickThrough(target);
+    },
+
+    trackDismissal: function trackDismissal(target) {
+        RNEvergage.trackDismissal(target);
+    },
+
+    trackImpression: function trackImpression(target) {
+        RNEvergage.trackImpression(target);
+    },
 };
 
 export default ReactNativeEvergage;
