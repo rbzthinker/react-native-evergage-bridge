@@ -1,7 +1,19 @@
 #import "RNEvergage.h"
 #import <Evergage/Evergage.h>
 
+@interface RNEvergage ()
+@property (nonatomic, strong) NSMutableDictionary *campaignData;
+@end
+
 @implementation RNEvergage
+
+- (id) init {
+    self = [super init];
+    if (self != nil) {
+        self.campaignData = [[NSMutableDictionary alloc] init];
+    }
+    return self;
+}
 
 - (dispatch_queue_t)methodQueue
 {
@@ -39,6 +51,22 @@ RCT_EXPORT_METHOD(trackAction:(NSString *)action) {
     [screen trackAction:action];
 }
 
+RCT_EXPORT_METHOD(trackClickThrough:(NSString *)target) {
+    EVGContext *screen = [self getScreen];
+    [screen trackClickthrough:[self.campaignData objectForKey:target]];
+}
+
+RCT_EXPORT_METHOD(trackImpression:(NSString *)target) {
+    EVGContext *screen = [self getScreen];
+    [screen trackImpression:[self.campaignData objectForKey:target]];
+}
+
+RCT_EXPORT_METHOD(trackDismissal:(NSString *)target) {
+    EVGContext *screen = [self getScreen];
+    [screen trackDismissal:[self.campaignData objectForKey:target]];
+}
+
+
 RCT_EXPORT_METHOD(viewProduct:(NSDictionary *)productMap) {
     EVGContext *screen = [self getScreen];
     EVGProduct *product = [EVGProduct productWithId:productMap[@"id"]
@@ -74,6 +102,7 @@ RCT_EXPORT_METHOD(setCampaignHandler:(NSString *)target) {
     EVGContext *screen = [self getScreen];
     
     EVGCampaignHandler handler = ^(EVGCampaign * __nonnull campaign) {
+        [self.campaignData setObject:campaign forKey:target];
         [self sendEventWithName:[self getEventName]
                            body:@{@"target":target,
                                   @"data": campaign.data}];
@@ -83,14 +112,3 @@ RCT_EXPORT_METHOD(setCampaignHandler:(NSString *)target) {
 }
 
 @end
-
-
-
-
-
-
-
-
-
-
-
