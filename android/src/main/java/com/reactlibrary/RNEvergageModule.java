@@ -136,7 +136,7 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 Context screen = getScreen();
-                if (null != screen) {
+                if (null != screen && productMap != null) {
                     Product product = new Product(productMap.getString("id")); //required
                     product.price = canGetValueForKey(productMap, "price") ? productMap.getDouble("price") : null;
                     product.listPrice = canGetValueForKey(productMap, "retailPrice") ? productMap.getDouble("retailPrice") : null;
@@ -183,11 +183,13 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
                         product.categories = categories;
 
                     screen.viewItem(product);
+                } else if (productMap == null){
+                    screen.viewItem(null);
                 }
             }
         });
     }
-
+    
     @ReactMethod
     public void setCampaignHandler(final String target) {
         UiThreadUtil.runOnUiThread(new Runnable() {
