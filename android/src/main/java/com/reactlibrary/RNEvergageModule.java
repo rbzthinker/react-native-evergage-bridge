@@ -221,8 +221,10 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
                         }
                     }
                 };
-                campaignHandlers.put(target, handler);
-                screen.setCampaignHandler(handler, target);
+                if (screen != null) {
+                    campaignHandlers.put(target, handler);
+                    screen.setCampaignHandler(handler, target);
+                }
             }
         });
     }
