@@ -184,7 +184,9 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
 
                     screen.viewItem(product);
                 } else if (productMap == null){
-                    screen.viewItem(null);
+                    if (screen != null) {
+                        screen.viewItem(null);
+                    }
                 }
             }
         });
