@@ -184,7 +184,9 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
 
                     screen.viewItem(product);
                 } else if (productMap == null){
-                    screen.viewItem(null);
+                    if (screen != null) {
+                        screen.viewItem(null);
+                    }
                 }
             }
         });
@@ -221,8 +223,10 @@ public class RNEvergageModule extends ReactContextBaseJavaModule {
                         }
                     }
                 };
-                campaignHandlers.put(target, handler);
-                screen.setCampaignHandler(handler, target);
+                if (screen != null) {
+                    campaignHandlers.put(target, handler);
+                    screen.setCampaignHandler(handler, target);
+                }
             }
         });
     }
